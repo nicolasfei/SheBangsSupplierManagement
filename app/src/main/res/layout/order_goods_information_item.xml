@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/code"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="短裙（CD00236454）"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.25" />
+
+    <TextView
+        android:id="@+id/color"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="红色"
+        app:layout_constraintStart_toEndOf="@+id/code"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.25" />
+
+    <TextView
+        android:id="@+id/size"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="M号"
+        app:layout_constraintStart_toEndOf="@+id/color"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.25" />
+
+    <TextView
+        android:id="@+id/num"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="x10"
+        app:layout_constraintStart_toEndOf="@+id/size"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.25" />
+</androidx.constraintlayout.widget.ConstraintLayout>
