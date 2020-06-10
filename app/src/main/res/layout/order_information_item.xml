@@ -8,11 +8,11 @@
     <TextView
         android:id="@+id/warehouse"
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="100dp"
         android:layout_marginStart="@dimen/text_view_margin"
         android:gravity="center"
         android:singleLine="false"
-        android:text="E库房\u3000\u3000地址：金牛之心14楼 E库房\n供货商千万注意：私自改换面料，版型不正，缩水，褪色都属于质量问题，我们一定会退还给你！！！"
+        android:text="E库房\u3000\u3000地址：金牛之心14楼 E库房\n\n供货商千万注意：私自改换面料，版型不正，缩水，褪色都属于质量问题，我们一定会退还给你！！！"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -114,16 +114,46 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goodsID" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <LinearLayout
+        android:id="@+id/goodsContent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/text_view_margin"
         android:layout_marginEnd="@dimen/text_view_margin"
-        android:maxHeight="300dp"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider2" />
+        app:layout_constraintTop_toBottomOf="@+id/divider2">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/TextViewStyleItem"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="颜色" />
+
+            <TextView
+                style="@style/TextViewStyleItem"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="尺码" />
+
+            <TextView
+                style="@style/TextViewStyleItem"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="数量" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+    </LinearLayout>
 
     <View
         android:id="@+id/divider3"
@@ -131,7 +161,7 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+        app:layout_constraintTop_toBottomOf="@+id/goodsContent" />
 
     <TextView
         android:id="@+id/bid"

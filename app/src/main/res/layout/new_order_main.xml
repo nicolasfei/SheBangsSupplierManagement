@@ -49,11 +49,12 @@
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <CheckBox
-        android:id="@+id/button14"
+        android:id="@+id/all"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
         android:text="@string/all_choice"
+        android:visibility="invisible"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
         app:layout_constraintStart_toEndOf="@+id/divider01"
         app:layout_constraintTop_toBottomOf="@+id/divider"
@@ -68,8 +69,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/detailed" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <com.nicolas.library.PullToRefreshListView
+        android:id="@+id/pullToRefreshListView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -107,6 +108,7 @@
         android:layout_height="0dp"
         android:background="@drawable/shape_rectangle_grey"
         android:gravity="center"
+        android:clickable="false"
         android:text="@string/submit"
         android:textSize="@dimen/text_size"
         app:layout_constraintBottom_toBottomOf="parent"

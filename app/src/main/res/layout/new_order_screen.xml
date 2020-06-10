@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/editText"
+        android:id="@+id/orderTime"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/drawer_margin"
@@ -40,7 +40,7 @@
         android:layout_marginTop="10dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/orderTime" />
 
     <TextView
         android:id="@+id/orderClass"
@@ -91,7 +91,7 @@
         android:layout_marginEnd="@dimen/drawer_margin"
         android:background="?android:attr/listDivider"
         android:gravity="start|center"
-        android:text="@string/CPFR"
+        android:text="@string/order_CPFR"
         android:textSize="@dimen/drawer_text_size"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
         app:layout_constraintStart_toEndOf="@+id/Chip2"
@@ -174,7 +174,7 @@
         app:layout_constraintTop_toBottomOf="@+id/branch" />
 
     <TextView
-        android:id="@+id/shipmentTime"
+        android:id="@+id/shipmentTimeText"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/drawer_margin"
@@ -188,7 +188,7 @@
         app:layout_constraintTop_toBottomOf="@+id/divider4" />
 
     <TextView
-        android:id="@+id/editText2"
+        android:id="@+id/shipmentTime"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/drawer_margin"
@@ -200,7 +200,7 @@
         android:textSize="@dimen/drawer_text_size"
         app:layout_constraintHeight_percent="@dimen/view_height_percent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shipmentTime" />
+        app:layout_constraintTop_toBottomOf="@+id/shipmentTimeText" />
 
     <View
         android:id="@+id/divider5"
@@ -209,7 +209,7 @@
         android:layout_marginTop="10dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        app:layout_constraintTop_toBottomOf="@+id/shipmentTime" />
 
     <TextView
         android:id="@+id/shipmentStatus"

@@ -179,12 +179,23 @@
     <string name="branch">分店</string>
     <string name="shipment_status">发货状态</string>
     <string name="is_print">是否打印</string>
+    <string name="order_time">下单日期</string>
     <string name="shipment_time">发货时间</string>
-    <string name="printed">已打印</string>
-    <string name="no_print">未打印</string>
     <string name="order_all">统下单</string>
     <string name="order_first">首单</string>
-    <string name="CPFR">补货单</string>
+    <string name="order_CPFR">补货单</string>
+    <string name="invalid_time">交货截至日期</string>
+    <string name="num">数量</string>
+    <string name="old_goods_id">原来货号</string>
+    <string name="new_goods_id">下单货号</string>
+    <string name="bid">进价</string>
+    <string name="print_time">打印时间</string>
+    <string name="remark">备注</string>
+    <string name="printed">已打印</string>
+    <string name="no_print">未打印</string>
+    <string name="shipment">已发货</string>
+    <string name="no_shipment">未发货</string>
+
 
     <!--排序-->
     <string name="sort_order_time">下单时间（从近到远）</string>
@@ -210,6 +221,11 @@
     <string name="search_hint">请输入单号</string>
     <string name="detailed">明细</string>
     <string name="all_choice">全选</string>
-
-
+    <string name="colon">：</string>
+    <string name="price">价值</string>
+    <string name="money">￥</string>
+    <string name="format_error">数据格式错误</string>
+    <string name="querying">查询中...</string>
+    <string name="submitting">提交中...</string>
+    <string name="supplier_admonish">供货商千万注意：私自改换面料，版型不正，缩水，褪色都属于质量问题，我们一定会退还给你！！！</string>
 </resources>
