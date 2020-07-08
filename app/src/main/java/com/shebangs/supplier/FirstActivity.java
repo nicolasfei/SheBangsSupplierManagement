@@ -11,9 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.nicolas.printerlibrary.PrinterManager;
 import com.shebangs.shebangssuppliermanagement.R;
-import com.shebangs.supplier.hardware.printer.PrinterManager;
-import com.shebangs.supplier.ui.login.LoginActivity;
+import com.shebangs.supplier.app.SupplierApp;
 
 public class FirstActivity extends AppCompatActivity {
     private final int REQUEST_CODE = 200;
@@ -107,7 +107,7 @@ public class FirstActivity extends AppCompatActivity {
     }
 
     private void jumpToLoginActivity() {
-        PrinterManager.getInstance();
+        PrinterManager.getInstance(SupplierApp.getInstance());
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);

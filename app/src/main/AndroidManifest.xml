@@ -68,9 +68,20 @@
 
         <activity
             android:name="com.shebangs.supplier.ui.home.order.NewOrderActivity"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/app_new_order">
             <intent-filter>
                 <action android:name="android.intent.action.NewOrderActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.shebangs.supplier.ui.home.order.OrderPrintActivity"
+            android:label="@string/order_printer">
+            <intent-filter>
+                <action android:name="android.intent.action.OrderPrintActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

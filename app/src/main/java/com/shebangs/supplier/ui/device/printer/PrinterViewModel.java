@@ -6,11 +6,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.nicolas.printerlibrary.PrinterDevice;
+import com.nicolas.printerlibrary.PrinterDeviceGroup;
+import com.nicolas.printerlibrary.PrinterManager;
 import com.shebangs.supplier.common.OperateInUserView;
 import com.shebangs.supplier.common.OperateResult;
-import com.shebangs.supplier.hardware.printer.PrinterDevice;
-import com.shebangs.supplier.hardware.printer.PrinterDeviceGroup;
-import com.shebangs.supplier.hardware.printer.PrinterManager;
 
 import java.util.List;
 
@@ -46,8 +46,8 @@ public class PrinterViewModel extends ViewModel {
     public PrinterViewModel() {
         printerGroupStatusResult = new MutableLiveData<>();
         printerStatusResult = new MutableLiveData<>();
-        printerDeviceGroups = PrinterManager.getInstance().getPrinterGroup();
-        PrinterManager.getInstance().setOnPrinterStatusUpdateListener(listener);
+        printerDeviceGroups = PrinterManager.getInstance(null).getPrinterGroup();
+        PrinterManager.getInstance(null).setOnPrinterStatusUpdateListener(listener);
     }
 
     public LiveData<OperateResult> getPrinterGroupStatusResult() {
@@ -74,7 +74,7 @@ public class PrinterViewModel extends ViewModel {
      * @param childPosition 设备Position
      */
     public void linkPrinter(int groupPosition, int childPosition) {
-        PrinterManager.getInstance().linkPrinter(groupPosition, childPosition);
+        PrinterManager.getInstance(null).linkPrinter(groupPosition, childPosition);
     }
 
     /**
@@ -84,15 +84,15 @@ public class PrinterViewModel extends ViewModel {
      * @param status        接口状态
      */
     public void setPrinterGroupInterface(int groupPosition, boolean status) {
-        PrinterManager.getInstance().setPrinterGroupInterface(groupPosition, status);
+        PrinterManager.getInstance(null).setPrinterGroupInterface(groupPosition, status);
     }
 
     /**
      * 扫描打印机
      */
     public void scanPrinter() {
-        PrinterManager.getInstance().scanPrinter(PrinterDevice.LINK_TYPE_BLUETOOTH);
-        PrinterManager.getInstance().scanPrinter(PrinterDevice.LINK_TYPE_WIFI);
+        PrinterManager.getInstance(null).scanPrinter(PrinterDevice.LINK_TYPE_BLUETOOTH);
+        PrinterManager.getInstance(null).scanPrinter(PrinterDevice.LINK_TYPE_WIFI);
     }
 
     /**
@@ -142,6 +142,6 @@ public class PrinterViewModel extends ViewModel {
      * 注销
      */
     public void destroy() {
-        PrinterManager.getInstance().setOnPrinterStatusUpdateListener(null);
+        PrinterManager.getInstance(null).setOnPrinterStatusUpdateListener(null);
     }
 }

@@ -3,9 +3,11 @@ package com.shebangs.supplier.server;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+
 import androidx.annotation.NonNull;
 
 import com.shebangs.supplier.app.SupplierApp;
+import com.shebangs.supplier.server.common.CommonCommand;
 import com.shebangs.supplier.server.login.LoginCommand;
 import com.shebangs.supplier.server.management.ManagementCommand;
 import com.shebangs.supplier.server.order.OrderCommand;
@@ -22,6 +24,7 @@ public class Invoker {
         //创建所需命令
         commandList = new ArrayList<>();
         commandList.add(new LoginCommand());
+        commandList.add(new CommonCommand());
         commandList.add(new OrderCommand());
         commandList.add(new ManagementCommand());
     }
@@ -34,6 +37,20 @@ public class Invoker {
         //线程异步执行
         TaskThread thread = new TaskThread(vo);
         thread.start();
+    }
+
+    /**
+     * 同步执行
+     *
+     * @param vo 命令
+     */
+    public String synchronousExec(CommandVo vo) {
+        for (Command c : commandList) {
+            if (c.getCommandType() == vo.typeEnum) {
+                return c.execute(vo);
+            }
+        }
+        return null;
     }
 
     //设置处理结果回调接口

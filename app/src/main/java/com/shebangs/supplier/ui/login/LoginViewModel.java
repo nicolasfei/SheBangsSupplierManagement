@@ -28,6 +28,8 @@ import java.util.Map;
 public class LoginViewModel extends ViewModel {
     private MutableLiveData<OperateResult> loginFormState = new MutableLiveData<>();
     private MutableLiveData<OperateResult> loginResult = new MutableLiveData<>();
+    private MutableLiveData<OperateResult> userInformationResult = new MutableLiveData<>();
+    private MutableLiveData<OperateResult> userAccountInformationResult = new MutableLiveData<>();
 
     public LoginViewModel() {
     }
@@ -38,6 +40,14 @@ public class LoginViewModel extends ViewModel {
 
     public LiveData<OperateResult> getLoginResult() {
         return loginResult;
+    }
+
+    public LiveData<OperateResult> getUserInformationResult() {
+        return userInformationResult;
+    }
+
+    public LiveData<OperateResult> getUserAccountInformationResult() {
+        return userAccountInformationResult;
     }
 
     /**
@@ -53,15 +63,45 @@ public class LoginViewModel extends ViewModel {
         vo.contentType = HttpHandler.ContentType_APP;
         vo.requestMode = HttpHandler.RequestMode_GET;
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("loginName", username);
-        parameters.put("loginPwd", password);
+        parameters.put("userName", username);
+        parameters.put("password", password);
         vo.parameters = parameters;
         Invoker.getInstance().setOnEchoResultCallback(this.callback);
         Invoker.getInstance().exec(vo);
 
         //保存用户名，密码
-        SupplierKeeper.getInstance().getOnDutySupplier().name = username;
+        SupplierKeeper.getInstance().getOnDutySupplier().userName = username;
         SupplierKeeper.getInstance().getOnDutySupplier().passWord = password;
+    }
+
+    /**
+     * 获取用户信息
+     */
+    public void getUserInformation() {
+        CommandVo vo = new CommandVo();
+        vo.typeEnum = CommandTypeEnum.COMMAND_SUPPLIER_LOGIN;
+        vo.url = LoginInterface.SupplierInformation;
+        vo.contentType = HttpHandler.ContentType_APP;
+        vo.requestMode = HttpHandler.RequestMode_GET;
+        Map<String, String> parameters = new HashMap<>();
+        vo.parameters = parameters;
+        Invoker.getInstance().setOnEchoResultCallback(this.callback);
+        Invoker.getInstance().exec(vo);
+    }
+
+    /**
+     * 获取用户账户数据
+     */
+    public void getUserAccountInformation(){
+        CommandVo vo = new CommandVo();
+        vo.typeEnum = CommandTypeEnum.COMMAND_SUPPLIER_LOGIN;
+        vo.url = LoginInterface.SupplierAccountInformation;
+        vo.contentType = HttpHandler.ContentType_APP;
+        vo.requestMode = HttpHandler.RequestMode_GET;
+        Map<String, String> parameters = new HashMap<>();
+        vo.parameters = parameters;
+        Invoker.getInstance().setOnEchoResultCallback(this.callback);
+        Invoker.getInstance().exec(vo);
     }
 
     Invoker.OnExecResultCallback callback = new Invoker.OnExecResultCallback() {
@@ -71,16 +111,41 @@ public class LoginViewModel extends ViewModel {
             switch (result.url) {
                 case LoginInterface.Login:        //登陆
                     if (!result.success) {
-                        loginResult.setValue(new OperateResult(new OperateError(-1, SupplierApp.getInstance().getString(R.string.login_failed), null)));
+                        loginResult.setValue(new OperateResult(new OperateError(-1, SupplierApp.getInstance().getString(R.string.login_failed) + SupplierApp.getInstance().getString(R.string.colon) + result.msg, null)));
                     } else {
                         try {
                             JSONObject jsonObject = new JSONObject(result.data);
-                            SupplierKeeper.getInstance().getOnDutySupplier().id = jsonObject.getString("userid");
-                            SupplierKeeper.getInstance().getOnDutySupplier().key = jsonObject.getString("userkey");
+                            SupplierKeeper.getInstance().setToken(jsonObject.getString("token"));
                             loginResult.setValue(new OperateResult(new OperateInUserView(null)));
                         } catch (JSONException e) {
                             e.printStackTrace();
                             loginResult.setValue(new OperateResult(new OperateError(-1, SupplierApp.getInstance().getString(R.string.login_failed), null)));
+                        }
+                    }
+                    break;
+                case LoginInterface.SupplierInformation:
+                    if (!result.success) {
+                        userInformationResult.setValue(new OperateResult(new OperateError(-1, result.msg, null)));
+                    } else {
+                        try {
+                            SupplierKeeper.getInstance().getOnDutySupplier().setSupplierInformation(result.data);
+                            userInformationResult.setValue(new OperateResult(new OperateInUserView(null)));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            userInformationResult.setValue(new OperateResult(new OperateError(-1, e.getMessage(), null)));
+                        }
+                    }
+                    break;
+                case LoginInterface.SupplierAccountInformation:
+                    if (!result.success) {
+                        userAccountInformationResult.setValue(new OperateResult(new OperateError(-1, result.msg, null)));
+                    } else {
+                        try {
+                            SupplierKeeper.getInstance().getSupplierAccount().setSupplierAccountInformation(result.data);
+                            userAccountInformationResult.setValue(new OperateResult(new OperateInUserView(null)));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            userAccountInformationResult.setValue(new OperateResult(new OperateError(-1, e.getMessage(), null)));
                         }
                     }
                     break;

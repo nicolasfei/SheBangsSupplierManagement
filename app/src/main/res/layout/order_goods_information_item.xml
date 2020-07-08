@@ -3,28 +3,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="@dimen/text_view_margin"
-    android:layout_marginEnd="@dimen/text_view_margin"
+    android:layout_margin="@dimen/text_view_margin"
     android:orientation="horizontal">
 
-    <TextView
+    <EditText
         android:id="@+id/color"
         style="@style/TextViewStyleItem"
         android:layout_weight="1"
         android:gravity="center"
         android:text="红色" />
 
-    <TextView
+    <EditText
         android:id="@+id/size"
         style="@style/TextViewStyleItem"
         android:layout_weight="1"
         android:gravity="center"
         android:text="XXM" />
 
-    <TextView
-        android:id="@+id/num"
-        style="@style/TextViewStyleItem"
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="@dimen/text_view_item_height"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="x10" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/reduce"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_margin="16dp"
+            android:background="@drawable/button_reduce"
+            android:layout_weight="0.2" />
+
+        <TextView
+            android:id="@+id/num"
+            style="@style/TextViewStyleItem"
+            android:layout_weight="0.6"
+            android:gravity="center"
+            android:text="x10" />
+
+        <Button
+            android:id="@+id/add"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_margin="16dp"
+            android:layout_weight="0.2"
+            android:background="@drawable/button_add" />
+    </LinearLayout>
 </LinearLayout>

@@ -1,2 +1,21 @@
-rootProject.name='SheBangsSupplierManagement'
+rootProject.name = 'SheBangsSupplierManagement'
 include ':app'
+//下拉刷新
+include ':pullrorefreshlibrary'
+project(':pullrorefreshlibrary').projectDir = new File(settingsDir, '../PullToRefresh/app/pullrorefreshlibrary')
+
+//打印机
+include ':printerlibrary'
+project(':printerlibrary').projectDir = new File(settingsDir, '../Printer/app/printerlibrary')
+
+//时间日期选择器
+include ':customdatepickerlibrary'
+project(':customdatepickerlibrary').projectDir = new File(settingsDir, '../CustomDatePicker/app/customdatepickerlibrary')
+
+//树形属性选择器
+include ':categoryexhibition'
+project(':categoryexhibition').projectDir = new File(settingsDir, '../CategoryExhibition/app/categoryexhibition')
+
+//工具库
+include ':toollibrary'
+project(':toollibrary').projectDir = new File(settingsDir, '../Tools/app/toollibrary')

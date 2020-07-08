@@ -2,7 +2,6 @@ package com.shebangs.supplier.ui.device.printer;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.TableLayout;
@@ -12,12 +11,9 @@ import android.widget.TextView;
 import com.gprinter.command.CpclCommand;
 import com.gprinter.command.EscCommand;
 import com.gprinter.command.LabelCommand;
-import com.shebangs.shebangssuppliermanagement.R;
-import com.shebangs.supplier.app.SupplierApp;
+import com.shebangs.supplier.data.OrderInformation;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class PrintContent {
@@ -166,6 +162,20 @@ public class PrintContent {
 //        Vector<Byte> datas = esc.getCommand();
 //        return datas;
 //    }
+
+    /**
+     * 获取订单打印Vector
+     *
+     * @param orders 订单
+     * @return Vector
+     */
+    public static Vector<Byte> getOrderReceipt(ArrayList<OrderInformation> orders) {
+
+
+
+        return null;
+    }
+
 
     /**
      * 对其测试打印

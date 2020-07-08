@@ -2,6 +2,8 @@ package com.shebangs.supplier.server;
 
 import android.util.Log;
 
+import com.shebangs.supplier.supplier.SupplierKeeper;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -114,7 +116,9 @@ public class HttpHandler {
             urlConnection = (HttpURLConnection) serverUrl.openConnection();
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type", contentType + "; charset=UTF-8");//"multipart/form-data");
-//            urlConnection.setRequestProperty("token", User.getInstance().getToken());
+            if (SupplierKeeper.getInstance().getToken() != null) {
+                urlConnection.setRequestProperty("token", SupplierKeeper.getInstance().getToken());
+            }
             urlConnection.setUseCaches(false);
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);

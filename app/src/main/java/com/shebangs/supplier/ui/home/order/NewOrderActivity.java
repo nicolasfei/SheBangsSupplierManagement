@@ -3,7 +3,7 @@ package com.shebangs.supplier.ui.home.order;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.TextUtils;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -26,19 +26,22 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.nicolas.categoryexhibition.data.NodeAttr;
 import com.nicolas.library.PullToRefreshListView;
+import com.nicolas.toollibrary.BruceDialog;
+import com.nicolas.toollibrary.Utils;
 import com.shebangs.shebangssuppliermanagement.R;
 import com.shebangs.supplier.common.OperateResult;
-import com.shebangs.supplier.common.SheBangsDialog;
-import com.shebangs.supplier.common.SheBangsDialog.OnChoiceItemListener;
 import com.shebangs.supplier.component.SingleFloatingDialog;
-import com.shebangs.supplier.tool.Utils;
+import com.shebangs.supplier.data.OrderClass;
+import com.shebangs.supplier.data.OrderInformation;
+import com.shebangs.supplier.data.OrderInformationAdapter;
+import com.shebangs.supplier.data.OrderStatus;
+import com.shebangs.supplier.data.PrintStatus;
+import com.shebangs.supplier.supplier.SupplierKeeper;
 import com.shebangs.supplier.ui.BaseActivity;
-import com.shebangs.supplier.ui.home.order.data.OrderClass;
-import com.shebangs.supplier.ui.home.order.data.OrderInformation;
-import com.shebangs.supplier.ui.home.order.data.OrderInformationAdapter;
-import com.shebangs.supplier.ui.home.order.data.PrintStatus;
-import com.shebangs.supplier.ui.home.order.data.ShipmentStatus;
+
+import java.util.List;
 
 
 public class NewOrderActivity extends BaseActivity {
@@ -52,7 +55,7 @@ public class NewOrderActivity extends BaseActivity {
     private OrderInformationAdapter adapter;
 
     //以下为查询条件
-    private TextView orderTime, goodsID, whichWarehouse, branch, shipmentTime, shipmentStatus;
+    private TextView orderTime, goodsID, goodsClass, whichWarehouse, branch, shipmentTime, shipmentStatus;
     private CheckBox orderClassAll, orderClassFirst, orderClassCPFR;     //下单类型
     private CheckBox printYet, printNot;                 //是否打印
     private Button queryClear, query;
@@ -89,43 +92,28 @@ public class NewOrderActivity extends BaseActivity {
         });
 
         //排序选择项对话框
-        this.dialog = new SingleFloatingDialog(this, 60, this.viewModel.getSortList(), new SingleFloatingDialog.OnSortChoiceListener() {
-            @Override
-            public void OnSortChoice(int position) {
-                resortOfRule(position);
-            }
-        });
+        this.dialog = new SingleFloatingDialog(this, 60, this.viewModel.getSortList(), this::resortOfRule);
         //listView
         this.listView = findViewById(R.id.pullToRefreshListView);
         this.adapter = new OrderInformationAdapter(this, this.viewModel.getOrderList());
-        this.adapter.setOnOrderChoiceListener(new OrderInformationAdapter.OnOrderChoiceListener() {
-            @Override
-            public void orderChoice(OrderInformation information) {
-                viewModel.setOrdersChoice(information);
-            }
+        this.adapter.setOnOrderChoiceListener(information -> {
+            Log.d(TAG, "orderChoice: checked is " + information.checked);
+            viewModel.setOrdersChoice(information);
         });
         this.listView.setAdapter(this.adapter);
         this.listView.setOnLoadingMoreListener(this.loadingMoreListener);
         this.listView.setOnRefreshListener(this.refreshListener);
         //全选
         this.checkAll = findViewById(R.id.all);
-        this.checkAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                viewModel.setOrdersAllChoice(isChecked);
-            }
-        });
+        this.checkAll.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.setOrdersAllChoice(isChecked));
         //合计
         this.total = findViewById(R.id.total);
         this.total.setText(getString(R.string.total));
         //提交
         this.submit = findViewById(R.id.submit);
-        this.submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //先打印订单条码，跳转到订单条码打印页面
-                jumpToPrintOrderActivity();
-            }
+        this.submit.setOnClickListener(v -> {
+            //先打印订单条码，跳转到订单条码打印页面
+            jumpToPrintOrderActivity();
         });
         //setClickable(false)方法一定要放在setOnClickListener()方法之后。不然没有效果
         this.submit.setClickable(false);
@@ -134,6 +122,7 @@ public class NewOrderActivity extends BaseActivity {
          */
         this.orderTime = findViewById(R.id.orderTime);
         this.goodsID = findViewById(R.id.goodsID);
+        this.goodsClass = findViewById(R.id.goodsClass);
         this.whichWarehouse = findViewById(R.id.whichWarehouse);
         this.branch = findViewById(R.id.branch);
         this.shipmentTime = findViewById(R.id.shipmentTime);
@@ -150,6 +139,7 @@ public class NewOrderActivity extends BaseActivity {
 
         this.orderTime.setOnClickListener(this.onClickListener);
         this.goodsID.setOnClickListener(this.onClickListener);
+        this.goodsClass.setOnClickListener(this.onClickListener);
         this.whichWarehouse.setOnClickListener(this.onClickListener);
         this.branch.setOnClickListener(this.onClickListener);
         this.shipmentTime.setOnClickListener(this.onClickListener);
@@ -166,67 +156,72 @@ public class NewOrderActivity extends BaseActivity {
         /**
          * 监听是否可以对订单进行多选
          */
-        this.viewModel.getOrderMultipleChoiceOperateResult().observe(this, new Observer<OperateResult>() {
-            @Override
-            public void onChanged(OperateResult operateResult) {
-                if (operateResult.getSuccess() != null) {
-                    adapter.notifyDataSetChanged();
-                }
+        this.viewModel.getOrderMultipleChoiceOperateResult().observe(this, operateResult -> {
+            if (operateResult.getSuccess() != null) {
+                adapter.notifyDataSetChanged();
             }
         });
 
         /**
          * 监听排序结果
          */
-        this.viewModel.getOrderSortResult().observe(this, new Observer<OperateResult>() {
-            @Override
-            public void onChanged(OperateResult operateResult) {
-                SheBangsDialog.dismissProgressDialog();
-                if (operateResult.getSuccess() != null) {
-                    adapter.notifyDataSetChanged();
-                }
+        this.viewModel.getOrderSortResult().observe(this, operateResult -> {
+            BruceDialog.dismissProgressDialog();
+            if (operateResult.getSuccess() != null) {
+                adapter.notifyDataSetChanged();
             }
         });
 
         /**
          * 监听订单选中状态改变
          */
-        this.viewModel.getOrderChoiceStatusChange().observe(this, new Observer<OperateResult>() {
-            @Override
-            public void onChanged(OperateResult operateResult) {
-                if (operateResult.getSuccess() != null) {
-                    updateOrderCheckStatus();       //更新订单的选中状态
-                }
+        this.viewModel.getOrderChoiceStatusChange().observe(this, operateResult -> {
+            if (operateResult.getSuccess() != null) {
+                updateOrderCheckStatus();       //更新订单的选中状态
             }
         });
         /**
          * 监听查询结果
          */
-        this.viewModel.getOrderQueryResult().observe(this, new Observer<OperateResult>() {
-            @Override
-            public void onChanged(OperateResult operateResult) {
-                SheBangsDialog.dismissProgressDialog();
-                if (operateResult.getSuccess() != null) {
-                    adapter.notifyDataSetChanged();
-                }
-                if (operateResult.getError() != null) {
-                    Utils.toast(NewOrderActivity.this, operateResult.getError().getErrorMsg());
-                }
+        this.viewModel.getOrderQueryResult().observe(this, operateResult -> {
+            BruceDialog.dismissProgressDialog();
+            if (operateResult.getSuccess() != null) {
+                adapter.notifyDataSetChanged();
+            }
+            if (operateResult.getError() != null) {
+                Utils.toast(NewOrderActivity.this, operateResult.getError().getErrorMsg());
             }
         });
         /**
          * 数据提交到服务器结果监听
          */
-        this.viewModel.getOrderSubmitResult().observe(this, new Observer<OperateResult>() {
+        this.viewModel.getOrderSubmitResult().observe(this, operateResult -> {
+            BruceDialog.dismissProgressDialog();
+            if (operateResult.getSuccess() != null) {
+                adapter.notifyDataSetChanged();
+            }
+            if (operateResult.getError() != null) {
+                Utils.toast(NewOrderActivity.this, operateResult.getError().getErrorMsg());
+            }
+        });
+        /**
+         * 监听商品类型查询
+         */
+        this.viewModel.getGoodsClassQuery().observe(this, new Observer<OperateResult>() {
             @Override
             public void onChanged(OperateResult operateResult) {
-                SheBangsDialog.dismissProgressDialog();
-                if (operateResult.getSuccess() != null) {
-                    adapter.notifyDataSetChanged();
-                }
-                if (operateResult.getError() != null) {
-                    Utils.toast(NewOrderActivity.this, operateResult.getError().getErrorMsg());
-                }
+//                BruceDialog.dismissProgressDialog();
+//                if (operateResult.getSuccess() != null) {
+//                    Message msg = operateResult.getSuccess().getMessage();
+//                    //组件商品类型选择dialog
+//                    GoodsClass goodsClass = new GoodsClass();
+//                    try {
+//                        Node node = goodsClass.buildTree((String) msg.obj);
+//                        showGoodsClassDialog(node);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
             }
         });
     }
@@ -236,61 +231,82 @@ public class NewOrderActivity extends BaseActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.orderTime:
-                    SheBangsDialog.showDateTimePickerDialog(NewOrderActivity.this, new SheBangsDialog.OnDateTimePickListener() {
-                        @Override
-                        public void OnDateTimePick(String dateTime) {
-                            orderTime.setText(dateTime);
-                            viewModel.getQueryCondition().orderTime = dateTime;
-                        }
+                    BruceDialog.showDateSlotPickerDialog(NewOrderActivity.this, dateTime -> {
+                        orderTime.setText(dateTime);
+                        viewModel.getQueryCondition().orderTime = dateTime;
                     });
                     break;
                 case R.id.goodsID://货号
-                    SheBangsDialog.showSingleChoiceDialog(R.string.goodsID, NewOrderActivity.this, new String[]{"货号1", "货号2"}, new OnChoiceItemListener() {
+//                    BruceDialog.showSingleChoiceDialog(R.string.goodsID, NewOrderActivity.this, new String[]{"货号1", "货号2"}, itemName -> {
+//                        String value = NewOrderActivity.this.getString(R.string.goodsID) + "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000" + itemName;
+//                        goodsID.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
+//                        viewModel.getQueryCondition().goodsID = itemName;
+//                    });
+                    BruceDialog.showEditInputDialog(R.string.goodsID, R.string.goodsID, InputType.TYPE_CLASS_TEXT, NewOrderActivity.this, new BruceDialog.OnInputFinishListener() {
                         @Override
-                        public void onChoiceItem(String itemName) {
+                        public void onInputFinish(String itemName) {
                             String value = NewOrderActivity.this.getString(R.string.goodsID) + "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000" + itemName;
                             goodsID.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
                             viewModel.getQueryCondition().goodsID = itemName;
                         }
                     });
                     break;
-                case R.id.whichWarehouse:
-                    SheBangsDialog.showSingleChoiceDialog(R.string.warehouse, NewOrderActivity.this, new String[]{"库房1", "库房2"}, new OnChoiceItemListener() {
+                case R.id.goodsClass:
+                    BruceDialog.showCategoryExhibitionDialog(NewOrderActivity.this, SupplierKeeper.getInstance().getGoodsClassTree(), false, new BruceDialog.OnCategoryChoiceListener() {
                         @Override
-                        public void onChoiceItem(String itemName) {
-                            String value = NewOrderActivity.this.getString(R.string.warehouse) + "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000" + itemName;
-                            whichWarehouse.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
-                            viewModel.getQueryCondition().warehouse = itemName;
+                        public void OnCategoryChoice(List<NodeAttr> attrs) {
+                            if (attrs != null && attrs.size() > 0) {
+                                String value = NewOrderActivity.this.getString(R.string.warehouse) + "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000" +
+                                        (attrs.size() == 1 ? attrs.get(0).getName() : attrs.get(0).getName() + "...");
+                                goodsClass.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
+                                viewModel.getQueryCondition().goodsClass.clear();
+                                for (NodeAttr attr : attrs) {
+                                    viewModel.getQueryCondition().goodsClass.add(attr.id);
+                                }
+                            }
                         }
                     });
+
+                    break;
+                case R.id.whichWarehouse:
+                    BruceDialog.showCategoryExhibitionDialog(NewOrderActivity.this, SupplierKeeper.getInstance().getStorehouseTree(), false,
+                            new BruceDialog.OnCategoryChoiceListener() {
+                                @Override
+                                public void OnCategoryChoice(List<NodeAttr> attrs) {
+                                    if (attrs != null && attrs.size() > 0) {
+                                        String value = NewOrderActivity.this.getString(R.string.warehouse) + "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000" +
+                                                (attrs.size() == 1 ? attrs.get(0).getName() : attrs.get(0).getName() + "...");
+                                        whichWarehouse.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
+                                        viewModel.getQueryCondition().warehouse.clear();
+                                        for (NodeAttr attr : attrs) {
+                                            viewModel.getQueryCondition().warehouse.add(attr.id);
+                                        }
+                                    }
+                                }
+                            });
                     break;
                 case R.id.branch:
-                    SheBangsDialog.showSingleChoiceDialog(R.string.branch, NewOrderActivity.this, new String[]{"分店1", "分店2"}, new OnChoiceItemListener() {
-                        @Override
-                        public void onChoiceItem(String itemName) {
-                            String value = NewOrderActivity.this.getString(R.string.branch) + "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000" + itemName;
-                            branch.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
-                            viewModel.getQueryCondition().branch = itemName;
-                        }
-                    });
+                    BruceDialog.showAutoCompleteTextViewDialog(R.string.branch, R.string.branchInput, InputType.TYPE_CLASS_TEXT, NewOrderActivity.this,
+                            SupplierKeeper.getInstance().getBranchCodeList(), new BruceDialog.OnInputFinishListener() {
+                                @Override
+                                public void onInputFinish(String itemName) {
+                                    String value = NewOrderActivity.this.getString(R.string.branch) + "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000" + itemName;
+                                    branch.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
+                                    viewModel.getQueryCondition().branch = itemName;
+                                }
+                            });
                     break;
                 case R.id.shipmentTime:
-                    SheBangsDialog.showDateTimePickerDialog(NewOrderActivity.this, new SheBangsDialog.OnDateTimePickListener() {
-                        @Override
-                        public void OnDateTimePick(String dateTime) {
-                            shipmentTime.setText(dateTime);
-                            viewModel.getQueryCondition().shipmentTime = dateTime;
-                        }
+                    BruceDialog.showDateSlotPickerDialog(NewOrderActivity.this, dateTime -> {
+                        shipmentTime.setText(dateTime);
+                        viewModel.getQueryCondition().shipmentTime = dateTime;
                     });
                     break;
                 case R.id.shipmentStatus:
-                    SheBangsDialog.showSingleChoiceDialog(R.string.branch, NewOrderActivity.this, ShipmentStatus.getAllValue(), new OnChoiceItemListener() {
-                        @Override
-                        public void onChoiceItem(String itemName) {
-                            String value = NewOrderActivity.this.getString(R.string.shipment_status) + "\u3000\u3000\u3000\u3000" + itemName;
-                            shipmentStatus.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
-                            viewModel.getQueryCondition().status = ShipmentStatus.valueOf(itemName);
-                        }
+                    BruceDialog.showSingleChoiceDialog(R.string.branch, NewOrderActivity.this, OrderStatus.getAllValue(), itemName -> {
+                        String value = NewOrderActivity.this.getString(R.string.shipment_status) + "\u3000\u3000\u3000\u3000" + itemName;
+                        shipmentStatus.setText(Html.fromHtml(value, Html.FROM_HTML_MODE_COMPACT));
+                        viewModel.getQueryCondition().status = OrderStatus.valueOf(itemName);
                     });
                     break;
                 case R.id.clear:
@@ -320,7 +336,7 @@ public class NewOrderActivity extends BaseActivity {
     private void queryOrderForCondition() {
         drawerLayout.closeDrawer(Gravity.RIGHT, true);
         viewModel.queryOrder();
-        SheBangsDialog.showProgressDialog(this, getString(R.string.querying));
+        BruceDialog.showProgressDialog(this, getString(R.string.querying));
     }
 
     private CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
@@ -352,8 +368,11 @@ public class NewOrderActivity extends BaseActivity {
      * 跳转到订单条码打印页面
      */
     private void jumpToPrintOrderActivity() {
-        Intent intent = new Intent(NewOrderActivity.this, null);
+        Intent intent = new Intent(NewOrderActivity.this, OrderPrintActivity.class);
         intent.putParcelableArrayListExtra("orders", viewModel.getCheckedOrders());
+        for (OrderInformation order : viewModel.getCheckedOrders()) {
+            Log.d(TAG, "jumpToPrintOrderActivity: " + order.goodsID + "---" + order.orderClass.toString());
+        }
         startActivityForResult(intent, 1);
     }
 
@@ -373,7 +392,7 @@ public class NewOrderActivity extends BaseActivity {
      * 订单提交
      */
     private void submitOrderToServer() {
-        SheBangsDialog.showProgressDialog(this, getString(R.string.submitting));
+        BruceDialog.showProgressDialog(this, getString(R.string.submitting));
         viewModel.submitOrders();       //提交订单更新数据到服务器
     }
 
@@ -403,7 +422,7 @@ public class NewOrderActivity extends BaseActivity {
      * @param position position
      */
     private void resortOfRule(int position) {
-        SheBangsDialog.showProgressDialog(this, "");
+        BruceDialog.showProgressDialog(this, "");
         viewModel.resortOfRule(position);
     }
 

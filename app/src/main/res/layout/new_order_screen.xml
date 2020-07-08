@@ -122,12 +122,35 @@
         app:layout_constraintTop_toBottomOf="@+id/divider1" />
 
     <View
+        android:id="@+id/divider11"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goodsID" />
+
+    <TextView
+        android:id="@+id/goodsClass"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/drawer_margin"
+        android:layout_marginEnd="@dimen/drawer_margin"
+        android:drawableEnd="@drawable/ic_sr_blue"
+        android:gravity="start|center"
+        android:text="@string/goodsClass"
+        android:textSize="@dimen/drawer_text_size"
+        app:layout_constraintHeight_percent="@dimen/view_height_percent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider11" />
+
+    <View
         android:id="@+id/divider2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/goodsID" />
+        app:layout_constraintTop_toBottomOf="@+id/goodsClass" />
 
     <TextView
         android:id="@+id/whichWarehouse"

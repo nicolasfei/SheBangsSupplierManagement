@@ -1,36 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/shape_rectangle_grey"
     android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/warehouse"
-        android:layout_width="0dp"
+        style="@style/TextViewStyleItem"
         android:layout_height="100dp"
-        android:layout_marginStart="@dimen/text_view_margin"
-        android:gravity="center"
         android:singleLine="false"
-        android:text="E库房\u3000\u3000地址：金牛之心14楼 E库房\n\n供货商千万注意：私自改换面料，版型不正，缩水，褪色都属于质量问题，我们一定会退还给你！！！"
-        android:textSize="20sp"
-        android:textStyle="bold"
+        android:text="E库房\n地址：金牛之心14楼 E库房"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.9" />
+        app:layout_constraintWidth_percent="0.7" />
+
+    <TextView
+        android:id="@+id/orderStatus"
+        style="@style/TextViewStyleItem"
+        android:layout_height="100dp"
+        android:singleLine="false"
+        android:drawableEnd="@drawable/ic_sj_down"
+        android:background="@drawable/shape_rectangle_red"
+        android:text="未发货"
+        app:layout_constraintStart_toEndOf="@+id/warehouse"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.2" />
 
     <CheckBox
         android:id="@+id/checkBox"
         style="@style/TextViewStyleItem"
         android:gravity="center"
-        app:layout_constraintStart_toEndOf="@+id/warehouse"
+        app:layout_constraintStart_toEndOf="@+id/orderStatus"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.1" />
 
     <View
         android:id="@+id/divider0"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/warehouse" />
@@ -39,26 +48,22 @@
         android:id="@+id/orderTime"
         style="@style/TextViewStyleItem"
         android:text="下单日期：04月30日"
-        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider0"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.35" />
 
     <TextView
         android:id="@+id/invalidTime"
         style="@style/TextViewStyleItem"
         android:text="交货截至日期：05月10日"
-        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/orderTime"
         app:layout_constraintTop_toBottomOf="@+id/divider0"
-        app:layout_constraintWidth_percent="0.4" />
+        app:layout_constraintWidth_percent="0.35" />
 
     <TextView
-        android:id="@+id/num"
+        android:id="@+id/shop"
         style="@style/TextViewStyleItem"
-        android:text="发货数量：1000"
-        android:textColor="@android:color/holo_red_light"
-        android:textStyle="bold"
+        android:text="店铺：JM023"
         app:layout_constraintStart_toEndOf="@+id/invalidTime"
         app:layout_constraintTop_toBottomOf="@+id/divider0"
         app:layout_constraintWidth_percent="0.3" />
@@ -68,25 +73,17 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/invalidTime" />
-
-    <TextView
-        android:id="@+id/shop"
-        style="@style/TextViewStyleItem"
-        android:text="店铺：JM023"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider1"
-        app:layout_constraintWidth_percent="0.2" />
 
     <TextView
         android:id="@+id/orderClass"
         style="@style/TextViewStyleItem"
         android:text="下单类型：统下单"
-        app:layout_constraintStart_toEndOf="@+id/shop"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider1"
-        app:layout_constraintWidth_percent="0.25" />
+        app:layout_constraintWidth_percent="0.35" />
 
     <TextView
         android:id="@+id/goodsID"
@@ -94,13 +91,14 @@
         android:text="原来货号：3096"
         app:layout_constraintStart_toEndOf="@+id/orderClass"
         app:layout_constraintTop_toBottomOf="@+id/divider1"
-        app:layout_constraintWidth_percent="0.25" />
+        app:layout_constraintWidth_percent="0.35" />
 
     <TextView
         android:id="@+id/newGoodsID"
         style="@style/TextViewStyleItem"
         android:layout_marginEnd="@dimen/text_view_margin"
         android:drawableEnd="@drawable/ic_sj_down"
+        android:background="@drawable/shape_rectangle_blue"
         android:text="开单货号：00430E6"
         app:layout_constraintStart_toEndOf="@+id/goodsID"
         app:layout_constraintTop_toBottomOf="@+id/divider1"
@@ -111,6 +109,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goodsID" />
 
@@ -160,6 +159,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goodsContent" />
 
@@ -169,7 +169,7 @@
         android:text="进价：￥50.00"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider3"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.35" />
 
     <TextView
         android:id="@+id/printTime"
@@ -177,12 +177,12 @@
         android:text="打印时间：2020-03-06"
         app:layout_constraintStart_toEndOf="@+id/bid"
         app:layout_constraintTop_toBottomOf="@+id/divider3"
-        app:layout_constraintWidth_percent="0.4" />
+        app:layout_constraintWidth_percent="0.35" />
 
     <TextView
-        android:id="@+id/shipmentTime"
+        android:id="@+id/num"
         style="@style/TextViewStyleItem"
-        android:text="发货时间：2020-03-07"
+        android:text="发货数量：1000"
         app:layout_constraintStart_toEndOf="@+id/printTime"
         app:layout_constraintTop_toBottomOf="@+id/divider3"
         app:layout_constraintWidth_percent="0.3" />
@@ -192,6 +192,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/printTime" />
 

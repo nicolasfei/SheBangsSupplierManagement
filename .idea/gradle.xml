@@ -9,8 +9,13 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
+            <option value="$PROJECT_DIR$/../CategoryExhibition/app/categoryexhibition" />
+            <option value="$PROJECT_DIR$/../CustomDatePicker/app/customdatepickerlibrary" />
+            <option value="$PROJECT_DIR$/../Printer/app/printerlibrary" />
+            <option value="$PROJECT_DIR$/../PullToRefresh/app/pullrorefreshlibrary" />
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/../Tools/app/toollibrary" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

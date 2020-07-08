@@ -47,8 +47,12 @@ dependencies {
     compile 'com.youth.banner:banner:2.0.8'
     implementation 'androidx.mediarouter:mediarouter:1.1.0'
     //compileOnly--只在编译时有效，不会参与打包，可以去除一些重复的jar
-//    implementation 'com.github.nicolasfei:CustomDatePicker:v1.0'
-    implementation 'com.github.nicolasfei:PullToRefresh:v1.0'
-    implementation files('libs/gprintersdkv2.jar')
-    implementation project(path: ':library')
+//    implementation 'com.github.nicolasfei:PullToRefresh:v1.01'
+//    implementation files('libs/gprintersdkv2.jar')
+//    implementation files('libs/pinyin4j-2.5.0.jar')
+    implementation project(path: ':pullrorefreshlibrary')
+    implementation project(path: ':printerlibrary')
+    implementation project(path: ':customdatepickerlibrary')
+    implementation project(path: ':categoryexhibition')
+    implementation project(path: ':toollibrary')
 }

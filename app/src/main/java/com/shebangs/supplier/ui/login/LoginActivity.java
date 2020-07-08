@@ -71,17 +71,51 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel.getLoginResult().observe(this, new Observer<OperateResult>() {
             @Override
             public void onChanged(@Nullable OperateResult loginResult) {
+                dismissLoginDialog();
                 if (loginResult == null) {
-                    dismissLoginDialog();
                     showLoginFailed(R.string.login_failed);
                     return;
                 }
                 if (loginResult.getError() != null) {
-                    dismissLoginDialog();
                     showLoginFailed(loginResult.getError().getErrorMsg());
                 }
+                //登陆成功，获取供应商信息
                 if (loginResult.getSuccess() != null) {
+                    showLoginDialog(getString(R.string.get_supplier_msg));
+                    loginViewModel.getUserInformation();
+                }
+            }
+        });
+
+        /**
+         * 监听获取用户信息
+         */
+        loginViewModel.getUserInformationResult().observe(this, new Observer<OperateResult>() {
+            @Override
+            public void onChanged(OperateResult operateResult) {
+                dismissLoginDialog();
+                if (operateResult.getSuccess() != null) {
+                    showLoginDialog(getString(R.string.get_supplier_account_msg));
+                    loginViewModel.getUserAccountInformation();
+                }
+                if (operateResult.getError() != null) {
+                    showLoginFailed(getString(R.string.get_supplier_failed) + getString(R.string.colon) + operateResult.getError().getErrorMsg());
+                }
+            }
+        });
+
+        /**
+         * 监听获取用户账户数据
+         */
+        loginViewModel.getUserAccountInformationResult().observe(this, new Observer<OperateResult>() {
+            @Override
+            public void onChanged(OperateResult operateResult) {
+                dismissLoginDialog();
+                if (operateResult.getSuccess() != null) {
                     updateUiWithUser();
+                }
+                if (operateResult.getError() != null) {
+                    showLoginFailed(getString(R.string.get_supplier_account_failed) + getString(R.string.colon) + operateResult.getError().getErrorMsg());
                 }
             }
         });
@@ -144,7 +178,7 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
-    private void showLoginFailed( String errorString) {
+    private void showLoginFailed(String errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 

@@ -2,7 +2,6 @@ package com.shebangs.supplier.ui.device.printer;
 
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -18,11 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.donkingliang.groupedadapter.adapter.GroupedRecyclerViewAdapter;
 import com.donkingliang.groupedadapter.holder.BaseViewHolder;
+import com.nicolas.printerlibrary.PrinterDeviceGroup;
+import com.nicolas.toollibrary.Utils;
 import com.shebangs.shebangssuppliermanagement.R;
 import com.shebangs.supplier.common.OperateResult;
-import com.shebangs.supplier.hardware.printer.PrinterDeviceGroup;
-import com.shebangs.supplier.hardware.printer.PrinterListAdapter;
-import com.shebangs.supplier.tool.Utils;
+import com.shebangs.supplier.common.PrinterListAdapter;
 
 public class PrinterActivity extends AppCompatActivity {
 

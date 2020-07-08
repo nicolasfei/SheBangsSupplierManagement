@@ -195,7 +195,36 @@
     <string name="no_print">未打印</string>
     <string name="shipment">已发货</string>
     <string name="no_shipment">未发货</string>
+    <string name="color">颜色</string>
+    <string name="size">尺码</string>
+    <string name="staff">营业员</string>
+    <string name="businessTime">下单时间</string>
+    <string name="order_class">下单类型</string>
+    <string name="choice_date">请选择日期</string>
+    <string name="reset">重置</string>
+    <string name="total">合计</string>
+    <string name="search_hint">请输入单号</string>
+    <string name="supplier_admonish">供货商千万注意：私自改换面料，版型不正，缩水，褪色都属于质量问题，我们一定会退还给你！！！</string>
+    <string name="supplier">供应商</string>
+    <string name="goods">商品</string>
+    <string name="order">订单</string>
+    <string name="goodsClass">商品类型</string>
 
+    <!--订单打印-->
+    <string name="print_goods_code">&#12288;货物条码&#12288;</string>
+    <string name="print_area">&#12288;&#12288;片区&#12288;</string>
+    <string name="print_warehouse">&#12288;&#12288;库房&#12288;</string>
+    <string name="print_order_class">&#12288;下单属性</string>
+    <string name="print_goods_class">&#12288;&#12288;类别&#12288;</string>
+    <string name="print_old_goods_code">&#12288;&#8194;旧货号&#8194;</string>
+    <string name="print_remark">&#12288;&#12288;备注&#12288;</string>
+    <string name="print_branch_code">&#12288;分店编号&#12288;</string>
+    <string name="print_order_date">&#12288;下单日期&#12288;</string>
+    <string name="print_invalid_date">&#12288;截至日期&#12288;</string>
+    <string name="print_new_goods_code">&#12288;&#8194;新货号&#8194;</string>
+    <string name="print_num">数量</string>
+    <string name="print_size">尺码</string>
+    <string name="print_attr">颜色</string>
 
     <!--排序-->
     <string name="sort_order_time">下单时间（从近到远）</string>
@@ -212,13 +241,6 @@
     <string name="yes">确定</string>
     <string name="search">搜索</string>
     <string name="submit">提交</string>
-    <string name="staff">营业员</string>
-    <string name="businessTime">下单时间</string>
-    <string name="order_class">下单类型</string>
-    <string name="choice_date">请选择日期</string>
-    <string name="reset">重置</string>
-    <string name="total">合计</string>
-    <string name="search_hint">请输入单号</string>
     <string name="detailed">明细</string>
     <string name="all_choice">全选</string>
     <string name="colon">：</string>
@@ -227,5 +249,24 @@
     <string name="format_error">数据格式错误</string>
     <string name="querying">查询中...</string>
     <string name="submitting">提交中...</string>
-    <string name="supplier_admonish">供货商千万注意：私自改换面料，版型不正，缩水，褪色都属于质量问题，我们一定会退还给你！！！</string>
+    <string name="print">打印</string>
+    <string name="newGoodsID">新货号</string>
+    <string name="goodsIDType">货号类型</string>
+    <string name="returnTime">返货时间</string>
+    <string name="code">条码</string>
+    <string name="auditTime">审核时间</string>
+    <string name="reputationWay">得分/扣分方式</string>
+    <string name="reputationTime">得分/扣分时间</string>
+    <string name="name">姓名</string>
+    <string name="supplierID">供应商编号</string>
+    <string name="contacts">联系人</string>
+    <string name="region">区域</string>
+    <string name="address">地址</string>
+    <string name="reputation">信誉分</string>
+    <string name="get_supplier_msg">获取用户数据...</string>
+    <string name="get_supplier_failed">获取用户信息失败</string>
+    <string name="get_supplier_account_msg">获取用户账户信息...</string>
+    <string name="get_supplier_account_failed">获取用户账户信息失败</string>
+    <string name="branchInput">请输入分店编号</string>
+    <string name="order_printer">订单打印</string>
 </resources>

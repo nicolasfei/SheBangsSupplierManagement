@@ -1,8 +1,13 @@
 package com.shebangs.supplier.ui.home.order;
 
+import android.os.Bundle;
+import android.os.Message;
+
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.nicolas.toollibrary.Tool;
 import com.shebangs.shebangssuppliermanagement.R;
 import com.shebangs.supplier.app.SupplierApp;
 import com.shebangs.supplier.common.OperateError;
@@ -13,23 +18,26 @@ import com.shebangs.supplier.server.CommandTypeEnum;
 import com.shebangs.supplier.server.CommandVo;
 import com.shebangs.supplier.server.HttpHandler;
 import com.shebangs.supplier.server.Invoker;
+import com.shebangs.supplier.server.InvokerHandler;
+import com.shebangs.supplier.server.common.CommonInterface;
 import com.shebangs.supplier.server.order.OrderInterface;
-import com.shebangs.supplier.supplier.SupplierKeeper;
-import com.shebangs.supplier.ui.home.order.data.OrderInformation;
-import com.shebangs.supplier.ui.home.order.data.OrderQueryCondition;
-import com.shebangs.supplier.ui.home.order.data.OrderSort;
+import com.shebangs.supplier.data.OrderClass;
+import com.shebangs.supplier.data.OrderInformation;
+import com.shebangs.supplier.data.OrderQueryCondition;
+import com.shebangs.supplier.data.OrderSort;
 
 import org.json.JSONException;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class NewOrderViewModel extends ViewModel {
-
+    private static final String TAG = "TAG";
     private List<OrderSort> sortList;               //排序选项
     private List<OrderInformation> orderList;       //订单列表
     private int totalNum;               //被选中的订单数统计
@@ -39,9 +47,10 @@ public class NewOrderViewModel extends ViewModel {
 
     private MutableLiveData<OperateResult> orderMultipleChoiceOperateResult = new MutableLiveData<>();     //多选操作结果
     private MutableLiveData<OperateResult> orderQueryResult = new MutableLiveData<>();              //订单查询结果
-    private MutableLiveData<OperateResult> orderSubmitResult = new MutableLiveData<>();             //订单查询结果
+    private MutableLiveData<OperateResult> orderSubmitResult = new MutableLiveData<>();             //订单提交结果
     private MutableLiveData<OperateResult> orderSortResult = new MutableLiveData<>();               //订单排序结果
     private MutableLiveData<OperateResult> orderChoiceStatusChange = new MutableLiveData<>();       //订单选中状态更新结果
+    private MutableLiveData<OperateResult> goodsClassQuery = new MutableLiveData<>();               //商品类型查询
 
     public NewOrderViewModel() {
         this.sortList = new ArrayList<>();
@@ -54,36 +63,82 @@ public class NewOrderViewModel extends ViewModel {
         this.sortList.add(OrderSort.SORT_OrderNumDrop);
 
         this.orderList = new ArrayList<>();
-        this.orderList.add(OrderInformation.getTestData());
-        this.orderList.add(OrderInformation.getTestData());
-        this.orderList.add(OrderInformation.getTestData());
-        this.orderList.add(OrderInformation.getTestData());
-        this.orderList.add(OrderInformation.getTestData());
+        OrderInformation order1 = OrderInformation.getTestData();
+        order1.orderTime = "2020-03-06 12:30";
+        order1.shipmentTime = "";
+        order1.branch = "北京分店1";
+        order1.warehouse = "成都库房1";
+        order1.orderClass.setType(OrderClass.FIRST);
+        order1.goodsNum = 140;
+        this.orderList.add(order1);
+
+        OrderInformation order2 = OrderInformation.getTestData();
+        order2.orderTime = "2014-03-06 12:30";
+        order2.shipmentTime = "";
+        order2.branch = "南京分店1";
+        order2.warehouse = "成都库房1";
+        order2.orderClass.setType(OrderClass.ALL);
+        order2.goodsNum = 110;
+        this.orderList.add(order2);
+
+
+        OrderInformation order3 = OrderInformation.getTestData();
+        order3.orderTime = "2011-03-06 12:30";
+        order3.shipmentTime = "";
+        order3.branch = "东京分店1";
+        order3.warehouse = "成都库房1";
+        order3.orderClass.setType(OrderClass.CPFR);
+        order3.goodsNum = 170;
+        this.orderList.add(order3);
+
+
+        OrderInformation order4 = OrderInformation.getTestData();
+        order4.orderTime = "2016-03-06 12:30";
+        order4.shipmentTime = "";
+        order4.branch = "西京分店1";
+        order4.warehouse = "成都库房1";
+        order4.orderClass.setType(OrderClass.FIRST);
+        order4.goodsNum = 190;
+        this.orderList.add(order4);
+
+
+        OrderInformation order5 = OrderInformation.getTestData();
+        order5.orderTime = "2009-03-06 12:30";
+        order5.shipmentTime = "";
+        order5.branch = "中华分店1";
+        order5.warehouse = "成都库房1";
+        order5.orderClass.setType(OrderClass.ALL);
+        order5.goodsNum = 20;
+        this.orderList.add(order5);
 
         this.queryCondition = new OrderQueryCondition();
     }
 
-    public MutableLiveData<OperateResult> getOrderMultipleChoiceOperateResult() {
+    LiveData<OperateResult> getOrderMultipleChoiceOperateResult() {
         return orderMultipleChoiceOperateResult;
     }
 
-    public MutableLiveData<OperateResult> getOrderQueryResult() {
+    LiveData<OperateResult> getOrderQueryResult() {
         return orderQueryResult;
     }
 
-    public MutableLiveData<OperateResult> getOrderSortResult() {
+    LiveData<OperateResult> getOrderSortResult() {
         return orderSortResult;
     }
 
-    public MutableLiveData<OperateResult> getOrderSubmitResult() {
+    LiveData<OperateResult> getOrderSubmitResult() {
         return orderSubmitResult;
     }
 
-    public MutableLiveData<OperateResult> getOrderChoiceStatusChange() {
+    LiveData<OperateResult> getOrderChoiceStatusChange() {
         return orderChoiceStatusChange;
     }
 
-    public List<String> getSortList() {
+    public LiveData<OperateResult> getGoodsClassQuery() {
+        return goodsClassQuery;
+    }
+
+    List<String> getSortList() {
         List<String> sList = new ArrayList<>();
         sList.add(OrderSort.SORT_OrderTime.getRule());
         sList.add(OrderSort.SORT_ShipmentTime.getRule());
@@ -98,15 +153,15 @@ public class NewOrderViewModel extends ViewModel {
     /**
      * 清空查询条件
      */
-    public void clearQueryCondition() {
+    void clearQueryCondition() {
         this.queryCondition.clear();
     }
 
-    public List<OrderInformation> getOrderList() {
+    List<OrderInformation> getOrderList() {
         return orderList;
     }
 
-    public OrderQueryCondition getQueryCondition() {
+    OrderQueryCondition getQueryCondition() {
         return queryCondition;
     }
 
@@ -115,8 +170,14 @@ public class NewOrderViewModel extends ViewModel {
      *
      * @return 选中订单的商品总价
      */
-    public float getTotalPrice() {
-        return totalPrice;
+    float getTotalPrice() {
+        this.totalPrice = 0;
+        for (OrderInformation order : this.orderList) {
+            if (order.checked) {
+                this.totalPrice += order.bid;
+            }
+        }
+        return this.totalPrice;
     }
 
     /**
@@ -124,14 +185,20 @@ public class NewOrderViewModel extends ViewModel {
      *
      * @return 选中订单的商品总数
      */
-    public int getTotalNum() {
-        return totalNum;
+    int getTotalNum() {
+        this.totalNum = 0;
+        for (OrderInformation order : this.orderList) {
+            if (order.checked) {
+                this.totalNum += order.goodsNum;
+            }
+        }
+        return this.totalNum;
     }
 
     /**
      * 查询订单
      */
-    public void queryOrder() {
+    void queryOrder() {
         CommandVo vo = new CommandVo();
         vo.typeEnum = CommandTypeEnum.COMMAND_SUPPLIER_ORDER;
         vo.url = OrderInterface.OrderQuery;
@@ -139,16 +206,23 @@ public class NewOrderViewModel extends ViewModel {
         vo.requestMode = HttpHandler.RequestMode_GET;
         Map<String, String> parameters = new HashMap<>();
         parameters.put("code", "goodsCode");
-        parameters.put("userkey", SupplierKeeper.getInstance().getOnDutySupplier().key);
         vo.parameters = parameters;
         Invoker.getInstance().setOnEchoResultCallback(this.callback);
         Invoker.getInstance().exec(vo);
     }
 
     /**
+     * 查询商品类型
+     */
+    public void queryGoodsClass() {
+        Invoker.getInstance().setOnEchoResultCallback(this.callback);
+        Invoker.getInstance().exec(InvokerHandler.getInstance().getGoodsClassCommand(null));
+    }
+
+    /**
      * 批量提交订单
      */
-    public void submitOrders() {
+    void submitOrders() {
         CommandVo vo = new CommandVo();
         vo.typeEnum = CommandTypeEnum.COMMAND_SUPPLIER_ORDER;
         vo.url = OrderInterface.OrderHandler;
@@ -156,7 +230,6 @@ public class NewOrderViewModel extends ViewModel {
         vo.requestMode = HttpHandler.RequestMode_POST;
         Map<String, String> parameters = new HashMap<>();
         parameters.put("code", "goodsCode");
-        parameters.put("userkey", SupplierKeeper.getInstance().getOnDutySupplier().key);
         vo.parameters = parameters;
         Invoker.getInstance().setOnEchoResultCallback(this.callback);
         Invoker.getInstance().exec(vo);
@@ -192,6 +265,15 @@ public class NewOrderViewModel extends ViewModel {
                         orderSubmitResult.setValue(new OperateResult(new OperateError(result.code, result.msg, null)));
                     }
                     break;
+                case CommonInterface.GoodsClassQuery:
+                    if (result.success) {
+                        Message msg = new Message();
+                        msg.obj = result.jsonData;
+                        goodsClassQuery.setValue(new OperateResult(new OperateInUserView(msg)));
+                    } else {
+                        goodsClassQuery.setValue(new OperateResult(new OperateError(-1, result.msg, null)));
+                    }
+                    break;
                 default:
                     break;
             }
@@ -201,7 +283,7 @@ public class NewOrderViewModel extends ViewModel {
     /**
      * 设置订单可多选
      */
-    public void setOrderMultipleChoice(boolean openOrClose) {
+    void setOrderMultipleChoice(boolean openOrClose) {
         for (OrderInformation information : this.orderList) {
             information.canChecked = openOrClose;
             if (!openOrClose) {              //关闭了可以多选，则之前的选择作废
@@ -210,8 +292,6 @@ public class NewOrderViewModel extends ViewModel {
         }
         orderMultipleChoiceOperateResult.setValue(new OperateResult(new OperateInUserView(null)));
         if (!openOrClose) {
-            this.totalPrice = 0;
-            this.totalNum = 0;
             this.orderChoiceStatusChange.setValue(new OperateResult(new OperateInUserView(null)));       //选中订单状态改变
         }
     }
@@ -237,18 +317,12 @@ public class NewOrderViewModel extends ViewModel {
      *
      * @param isChecked true/false
      */
-    public void setOrdersAllChoice(boolean isChecked) {
+    void setOrdersAllChoice(boolean isChecked) {
         if (isChecked) {
-            this.totalNum = 0;
-            this.totalPrice = 0;
             for (OrderInformation order : this.orderList) {
                 order.checked = true;
-                this.totalNum += order.goodsNum;
-                this.totalPrice += order.bid;
             }
         } else {
-            this.totalNum = 0;
-            this.totalPrice = 0;
             for (OrderInformation order : this.orderList) {
                 order.checked = false;
             }
@@ -261,69 +335,42 @@ public class NewOrderViewModel extends ViewModel {
      *
      * @param position 排序规则
      */
-    public void resortOfRule(int position) {
+    void resortOfRule(int position) {
         switch (sortList.get(position)) {
             case SORT_OrderTime:
-                Collections.sort(this.orderList, new Comparator<OrderInformation>() {
-                    @Override
-                    public int compare(OrderInformation o1, OrderInformation o2) {
-                        return o1.orderTime.compareTo(o2.orderTime);
-                    }
-                });
+                Collections.sort(this.orderList, (o1, o2) -> -(o1.orderTime.compareTo(o2.orderTime)));
                 this.orderSortResult.setValue(new OperateResult(new OperateInUserView(null)));
                 break;
             case SORT_ShipmentTime:
-                Collections.sort(this.orderList, new Comparator<OrderInformation>() {
-                    @Override
-                    public int compare(OrderInformation o1, OrderInformation o2) {
-                        return o1.shipmentTime.compareTo(o2.shipmentTime);
-                    }
-                });
+                Collections.sort(this.orderList, (o1, o2) -> o1.shipmentTime.compareTo(o2.shipmentTime));
                 this.orderSortResult.setValue(new OperateResult(new OperateInUserView(null)));
                 break;
             case SORT_Branch:
-                Collections.sort(this.orderList, new Comparator<OrderInformation>() {
-                    @Override
-                    public int compare(OrderInformation o1, OrderInformation o2) {
-                        return o1.branch.compareTo(o2.branch);
-                    }
+                Collections.sort(this.orderList, (o1, o2) -> {
+                    String p1 = Tool.converterToFirstSpell(o1.branch);
+                    String p2 = Tool.converterToFirstSpell(o2.branch);
+                    return Collator.getInstance(Locale.ENGLISH).compare(p1, p2);
                 });
                 this.orderSortResult.setValue(new OperateResult(new OperateInUserView(null)));
                 break;
             case SORT_Warehouse:
-                Collections.sort(this.orderList, new Comparator<OrderInformation>() {
-                    @Override
-                    public int compare(OrderInformation o1, OrderInformation o2) {
-                        return o1.warehouse.compareTo(o2.warehouse);
-                    }
+                Collections.sort(this.orderList, (o1, o2) -> {
+                    String p1 = Tool.converterToFirstSpell(o1.warehouse);
+                    String p2 = Tool.converterToFirstSpell(o2.warehouse);
+                    return Collator.getInstance(Locale.ENGLISH).compare(p1, p2);
                 });
                 this.orderSortResult.setValue(new OperateResult(new OperateInUserView(null)));
                 break;
             case SORT_OrderClass:
-                Collections.sort(this.orderList, new Comparator<OrderInformation>() {
-                    @Override
-                    public int compare(OrderInformation o1, OrderInformation o2) {
-                        return Integer.compare(o1.orderClass.getType(), o2.orderClass.getType());
-                    }
-                });
+                Collections.sort(this.orderList, (o1, o2) -> Integer.compare(o1.orderClass.getType(), o2.orderClass.getType()));
                 this.orderSortResult.setValue(new OperateResult(new OperateInUserView(null)));
                 break;
             case SORT_OrderNumRise:
-                Collections.sort(this.orderList, new Comparator<OrderInformation>() {
-                    @Override
-                    public int compare(OrderInformation o1, OrderInformation o2) {
-                        return Integer.compare(o1.goodsNum, o2.goodsNum);
-                    }
-                });
+                Collections.sort(this.orderList, (o1, o2) -> -(Integer.compare(o1.goodsNum, o2.goodsNum)));
                 this.orderSortResult.setValue(new OperateResult(new OperateInUserView(null)));
                 break;
             case SORT_OrderNumDrop:
-                Collections.sort(this.orderList, new Comparator<OrderInformation>() {
-                    @Override
-                    public int compare(OrderInformation o1, OrderInformation o2) {
-                        return Integer.compare(o2.goodsNum, o1.goodsNum);
-                    }
-                });
+                Collections.sort(this.orderList, (o1, o2) -> Integer.compare(o1.goodsNum, o2.goodsNum));
                 this.orderSortResult.setValue(new OperateResult(new OperateInUserView(null)));
                 break;
             default:
@@ -336,7 +383,7 @@ public class NewOrderViewModel extends ViewModel {
      *
      * @param information 订单
      */
-    public void setOrdersChoice(OrderInformation information) {
+    void setOrdersChoice(OrderInformation information) {
         if (information.checked) {
             this.totalNum += information.goodsNum;
             this.totalPrice += information.bid;
@@ -352,7 +399,7 @@ public class NewOrderViewModel extends ViewModel {
      *
      * @return 选中的订单
      */
-    public ArrayList<OrderInformation> getCheckedOrders() {
+    ArrayList<OrderInformation> getCheckedOrders() {
         ArrayList<OrderInformation> checkedOrders = new ArrayList<>();
         for (OrderInformation order : this.orderList) {
             if (order.checked) {
